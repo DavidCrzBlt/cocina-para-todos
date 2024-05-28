@@ -1,0 +1,36 @@
+{% load static %}
+<!-- Comments Section -->
+<div class="row mb-3">
+    <h2 class="h2 text-start text-danger mb-3">Comments</h2>
+    <div class="comments">
+        {% for comment in comments %}
+        <div class="comment mb-3">
+            <div class="row">
+                <div class="col-auto">
+                    <img class="profile-img-comments" src="{{ comment.profile_picture_url }}" alt="Profile Picture">
+                </div>
+                <div class="col">
+                    <p>
+                        <strong>{{ comment.user }}</strong> said on {{ comment.created_at }}
+                    </p>
+                    <p>{{ comment.text }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Comment Form -->
+<div class="row mb-3">
+    <h2 class="h2 text-start text-danger mb-3">Add a Comment</h2>
+    {% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+    </form>
+    {% else %}
+    <p><a href="{% url 'usuarios:login' %}">Log in</a> to add a comment.</p>
+    {% endif %}
+</div>

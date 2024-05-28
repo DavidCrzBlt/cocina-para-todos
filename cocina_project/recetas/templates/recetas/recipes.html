@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar_profile.html' %}
+{% else %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<div class="container">
+    <div class="container">
+        <form class="row d-flex mb-4 align-items-center" role="search" method="get">
+            <div class="col-5">{{ search_form|crispy }}</div>
+            <div class="col-3"><button class="btn btn-outline-success" type="submit">Search</button></div>
+        </form>
+    </div>
+    {% if recipes_list %}
+    {% for recipe in recipes_list %}
+    <div class="container">
+        <div class="row">
+            <div class="col align-self-start">
+                <h2 class="text-danger">
+                    <a href="{% url 'recetas:recipe_detail' pk=recipe.id slug=recipe.slug %}">{{ recipe.title }}</a>
+                </h2>
+                <p class="lead">
+                    {{ recipe.description|truncatewords:40 }}
+                </p>
+                <div>{{ recipe.author }} / {{ recipe.updated_at }}</div>
+            </div>
+            <div class="col">
+                <div class="text-center"><img src="{{ recipe.image.url }}" alt="Profile Picture" mb-3" height="250px">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number}}</a></li>
+            {% endif %}
+
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.number }}">{{ page_obj.number}}</a></li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number}}</a></li>
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.paginator.num_pages }}">...</a></li>
+            <li class="page-item"><a class="page-link border border-danger text-danger"
+                    href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div>There are no posts yet</div>
+    {% endif %}
+</div>
+
+{% endblock %}
